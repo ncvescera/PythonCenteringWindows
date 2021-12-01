@@ -1,6 +1,6 @@
 import argparse
 from contextlib import contextmanager
-from typing import Any, Dict, Optional, Tuple, Union  # noqa
+from typing import Any, Dict, Optional, Tuple, Union, Callable  # noqa
 
 from Xlib import X
 from Xlib.display import Display
@@ -18,15 +18,42 @@ width = root.get_geometry().width       # screen width (eg. 1920)
 height = root.get_geometry().height     # screen height (eg. 1080)
 
 
-def main(args):
+def main():
+    # define selectable options
+    # type: Dict[str, Callable[[Window], None]]
+    options = {
+        'center': centering_window,     # center window
+        'test': test                    # test func
+    }
+
     # get active window
     window = get_active_window()
 
-    # get window dims
-    win_size = window.get_geometry()
-    print(f"Window pos: ({win_size.x}, {win_size.y})  Window size: ({win_size.width}, {win_size.height})")
+    # execute user selected tiling operation
+    options[args.mode](window)
 
-    # print(f"Centering Window {win_id}")
+    # update window
+    disp.sync()
+
+
+def test(aaa):
+    print("TEST")
+
+
+def centering_window(window: Window):
+    """
+        Centers the active window.
+
+        -m center
+
+        Used with --noresize the active window is not resized when centered
+    """
+
+    print(f"Centering Window {window}")
+
+    # get window size
+    win_size = get_window_size(window)
+
     if args.noresize:
         # centering windows without resize dims
         print('\t with NoResize mode')
@@ -56,9 +83,14 @@ def main(args):
             stack_mode=X.Above
         )
 
-    # update window
-    disp.sync()
-    print()
+
+def get_window_size(window: Window):
+    """Returns window size object"""
+    # get window dims
+    win_size = window.get_geometry()
+    print(f"Window pos: ({win_size.x}, {win_size.y})  Window size: ({win_size.width}, {win_size.height})")
+
+    return win_size
 
 
 def get_active_window():
@@ -111,10 +143,31 @@ def get_active_window():
 
 
 if __name__ == '__main__':
+    # init argument parser
     parser = argparse.ArgumentParser(description='My awesome python tiling assistant !')
-    parser.add_argument('--noresize', action='store_true',
-                        help='Center window without resize it')
+
+    # arguments
+    parser.add_argument(
+        '-m',
+        '--mode',
+        type=str,
+        choices=('center', 'test'),
+        required=Tuple,
+        help='Choose how to tile the active window'
+    )
+
+    parser.add_argument(
+        '--noresize',
+        action='store_true',
+        help='Center window without resize it'
+    )
+    #parser.add_argument(
+    #    '--noresize',
+    #    action='store_true',
+    #    help='Center window without resize it'
+    #)
 
     args = parser.parse_args()
 
-    main(args)
+    main()
+    

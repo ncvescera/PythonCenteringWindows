@@ -43,18 +43,26 @@ def tile_left(window: Window):
     # get window size
     win_size = get_window_size(window)
 
+    _x = 0
+    _y = 0
+    _w = int(width/2)
+    _h = usable_height
+
+    print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
+
     # tiling left windows
     window.configure(
         # where to put the window
-        x=0,
-        y=0,
+        x=_x,
+        y=_y,
         # new window dims
-        width=int(width/2),
-        height=height,
+        width=_w,
+        height=_h,
         # other stuff
         border_width=0,
         stack_mode=X.Above
     )
+    disp.sync()
 
 
 def tile_right(window: Window):
@@ -188,6 +196,14 @@ def get_window_size(window: Window):
     return win_size
 
 
+def calculate_usable_height():
+    prop1 = root.get_full_property(disp.get_atom("_NET_WORKAREA"), X.AnyPropertyType).value[3]
+    prop2 = root.get_full_property(disp.get_atom("_NET_WORKAREA"), X.AnyPropertyType).value[1]
+    res = prop1 - prop2
+
+    return res if res > 0 else res*(-1)
+
+
 def get_active_window():
     """Wrapper for getting the active window object. Returns the WindowObject of the active window."""
 
@@ -267,5 +283,7 @@ if __name__ == '__main__':
     )
 
     args = parser.parse_args()
+
+    usable_height = calculate_usable_height()
 
     main()

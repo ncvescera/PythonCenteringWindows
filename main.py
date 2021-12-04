@@ -62,7 +62,6 @@ def tile_left(window: Window):
         border_width=0,
         stack_mode=X.Above
     )
-    disp.sync()
 
 
 def tile_right(window: Window):
@@ -77,14 +76,21 @@ def tile_right(window: Window):
     # get window size
     win_size = get_window_size(window)
 
-    # tiling left windows
+    _x = int(width/2)
+    _y = 0
+    _w = int(width / 2) - 10    # 10 = border width
+    _h = usable_height
+
+    print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
+
+    # tiling right windows
     window.configure(
         # where to put the window
-        x=int(width/2),
-        y=0,
+        x=_x,
+        y=_y,
         # new window dims
-        width=int(width/2),
-        height=height,
+        width=_w,
+        height=_h,
         # other stuff
         border_width=0,
         stack_mode=X.Above
@@ -103,14 +109,21 @@ def tile_leftcenter(window: Window):
     # get window size
     win_size = get_window_size(window)
 
+    _x = 0
+    _y = 0
+    _w = int(width / 3)*2
+    _h = usable_height
+
+    print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
+
     # tiling LeftCenter windows
     window.configure(
         # where to put the window
-        x=0,
-        y=0,
+        x=_x,
+        y=_y,
         # new window dims
-        width=int(width / 3)*2,
-        height=height,
+        width=_w,
+        height=_h,
         # other stuff
         border_width=0,
         stack_mode=X.Above
@@ -129,14 +142,21 @@ def tile_rightcenter(window: Window):
     # get window size
     win_size = get_window_size(window)
 
+    _x = int(width / 3)
+    _y = 0
+    _w = int(width / 3)*2
+    _h = usable_height
+
+    print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
+
     # tiling RightCenter windows
     window.configure(
         # where to put the window
-        x=int(width / 3),
-        y=0,
+        x=_x,
+        y=_y,
         # new window dims
-        width=int(width / 3)*2,
-        height=height,
+        width=_w,
+        height=_h,
         # other stuff
         border_width=0,
         stack_mode=X.Above
@@ -160,31 +180,35 @@ def centering_window(window: Window):
     if args.noresize:
         # centering windows without resize dims
         print('\t with NoResize mode')
-        window.configure(
-            # where to put the window
-            x=int((width - win_size.width) / 2),
-            y=int((height - win_size.height) / 2),
-            # new window dims
-            width=win_size.width,
-            height=win_size.height,
-            # other stuff
-            border_width=0,
-            stack_mode=X.Above
-        )
+
+        _x = int((width - win_size.width) / 2)
+        _y = int((height - win_size.height) / 2)
+        _w = win_size.width
+        _h = win_size.height
+
     else:
         # centering windows and resize dims
         print('\t with Resize mode')
-        window.configure(
-            # where to put the window
-            x=x,
-            y=y,
-            # new window dims
-            width=width - (x * 2),
-            height=height - (y * 2),
-            # other stuff
-            border_width=0,
-            stack_mode=X.Above
-        )
+
+        _x = x
+        _y = y
+        _w = width - (x * 2)
+        _h = height - (y * 2)
+
+    print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
+
+    # tiling center windows
+    window.configure(
+        # where to put the window
+        x=_x,
+        y=_y,
+        # new window dims
+        width=_w,
+        height=_h,
+        # other stuff
+        border_width=0,
+        stack_mode=X.Above
+    )
 
 
 def get_window_size(window: Window):

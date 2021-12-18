@@ -163,6 +163,71 @@ def tile_rightcenter(window: Window):
     )
 
 
+def tile_leftleft(window: Window):
+    """
+        Tile window to the left-left (1/3) part of the screen.
+
+        -m tile_leftleft
+    """
+
+    print(f"Tiling RightCenter Window {window}")
+
+    # get window size
+    win_size = get_window_size(window)
+
+    _x = 0
+    _y = 0
+    _w = int(width / 3)
+    _h = usable_height
+
+    print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
+
+    # tiling RightCenter windows
+    window.configure(
+        # where to put the window
+        x=_x,
+        y=_y,
+        # new window dims
+        width=_w,
+        height=_h,
+        # other stuff
+        border_width=0,
+        stack_mode=X.Above
+    )
+
+
+def tile_rightright(window: Window):
+    """
+        Tile window to the right-right (1/3) part of the screen.
+
+        -m tile_rightright
+    """
+
+    print(f"Tiling RightCenter Window {window}")
+
+    # get window size
+    win_size = get_window_size(window)
+
+    _x = int(width / 3) * 2
+    _y = 0
+    _w = int(width / 3)
+    _h = usable_height
+
+    print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
+
+    # tiling RightCenter windows
+    window.configure(
+        # where to put the window
+        x=_x,
+        y=_y,
+        # new window dims
+        width=_w,
+        height=_h,
+        # other stuff
+        border_width=0,
+        stack_mode=X.Above
+    )
+
 def centering_window(window: Window):
     """
         Centers the active window.
@@ -286,6 +351,8 @@ if __name__ == '__main__':
         'tile_right': tile_right,  # tiling window to the right
         'tile_leftcenter': tile_leftcenter,
         'tile_rightcenter': tile_rightcenter,
+        'tile_leftleft': tile_leftleft,
+        'tile_rightright': tile_rightright,
     }
 
     # init argument parser

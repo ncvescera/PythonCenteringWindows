@@ -8,6 +8,8 @@ from Xlib import X
 from Xlib.display import Display
 from Xlib.error import XError
 from Xlib.xobject.drawable import Window
+from Xlib.ext import record
+from Xlib.protocol import rq
 
 # Display Vars
 disp = Display()
@@ -21,6 +23,18 @@ height = root.get_geometry().height     # screen height (eg. 1080)
 
 
 def main():
+    set_keylistener()
+
+    global disp, root
+
+    disp = Display()
+    root = disp.screen().root
+
+    while 1:
+        # Infinite wait, doesn't do anything as no events are grabbed
+        event = root.display.next_event()
+
+    """
     # get active window
     window = get_active_window()
 
@@ -29,6 +43,8 @@ def main():
 
     # update window
     disp.sync()
+
+    """
 
 
 def tile_left(window: Window):
@@ -177,6 +193,7 @@ def centering_window(window: Window):
     # get window size
     win_size = get_window_size(window)
 
+    """
     if args.noresize:
         # centering windows without resize dims
         print('\t with NoResize mode')
@@ -194,7 +211,11 @@ def centering_window(window: Window):
         _y = y
         _w = width - (x * 2)
         _h = height - (y * 2)
-
+    """
+    _x = x
+    _y = y
+    _w = width - (x * 2)
+    _h = height - (y * 2)
     print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
 
     # tiling center windows
@@ -277,6 +298,62 @@ def get_active_window():
         return window
 
 
+def handler(reply):
+    """ This function is called when a xlib event is fired """
+    data = reply.data
+    while len(data):
+        event, data = rq.EventField(None).parse_binary_value(data, disp.display, None, None)
+
+        # KEYCODE IS FOUND USERING event.detail
+        # print(event.detail)asasd
+
+        if event.type == X.KeyPress:
+            premuti.append(event.detail)
+            # BUTTON PRESSED
+        elif event.type == X.KeyRelease:
+            try:
+                premuti.remove(event.detail)
+            except:
+                pass
+            # BUTTON RELEASED
+
+        # 2 or more button pressed
+        if len(premuti) >= 2:
+            print(premuti)
+
+            print(bindigs.keys())
+            # check if pressed keys are an actual combination
+            if tuple(premuti) in bindigs.keys():
+                print("TROVATO !!")
+
+                fun = bindigs[tuple(premuti)]
+                print(fun)
+                window = get_active_window()
+                fun(window)
+                disp.sync()
+
+
+def set_keylistener():
+    # Monitor keypress and button press
+    ctx = disp.record_create_context(
+                0,
+                [record.AllClients],
+                [{
+                        'core_requests': (0, 0),
+                        'core_replies': (0, 0),
+                        'ext_requests': (0, 0, 0, 0),
+                        'ext_replies': (0, 0, 0, 0),
+                        'delivered_events': (0, 0),
+                        'device_events': (X.KeyReleaseMask, X.ButtonReleaseMask),
+                        'errors': (0, 0),
+                        'client_started': False,
+                        'client_died': False,
+                }])
+    disp.record_enable_context(ctx, handler)
+    disp.record_free_context(ctx)
+
+
+
 if __name__ == '__main__':
     # define selectable options
     # type: Dict[str, Callable[[Window], None]]
@@ -288,6 +365,15 @@ if __name__ == '__main__':
         'tile_rightcenter': tile_rightcenter,
     }
 
+    premuti = []
+    #bindigs = [
+    #    [133, 58],  # win + mm
+    #]
+
+    bindigs = {
+        (133, 58): centering_window
+    }
+    """
     # init argument parser
     parser = argparse.ArgumentParser(description='My awesome python tiling assistant !')
 
@@ -307,7 +393,14 @@ if __name__ == '__main__':
     )
 
     args = parser.parse_args()
-
+    """
     usable_height = calculate_usable_height()
 
-    main()
+    set_keylistener()
+
+
+    disp = Display()
+    root = disp.screen().root
+    while 1:
+        # Infinite wait, doesn't do anything as no events are grabbed
+        event = root.display.next_event()

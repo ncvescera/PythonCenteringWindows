@@ -129,6 +129,9 @@ def centering_window():
     win = ewmh.getActiveWindow()
     win_size = get_window_size(win)
 
+    # disable maximised_vert 
+    ewmh.setWmState(win, 0, '_NET_WM_STATE_MAXIMIZED_VERT')
+
     if args.noresize:
         # centering windows without resize dims
         print('\t with NoResize mode')

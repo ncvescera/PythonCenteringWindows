@@ -26,51 +26,6 @@ def main():
     options[args.mode](window)
 
 
-
-    w.move(int(wid / 2), 0)
-
-    w.move(0, 0)
-
-    w.resize(int(wid / 2), hei)
-
-    Gdk.flush()
-
-
-"""
-Align left and right 
-
-
-
-
-
-print(w)
-print(s)
-print(ss.get_width(), ss.get_height())
-
-
-#wid = ss.get_width()
-#hei = ss.get_height()
-
-print(wid, hei)
-
-tt = 1
-
-w.set_decorations(0) #use 1 to turn on decorations
-
-if tt:
-	w.move(int(wid/2),0)
-else:
-	w.move(0,0)
-
-w.resize(int(wid/2), hei)
-
-Gdk.flush()
-
-#w.set_decorations(Gdk.WMDecoration.ALL) #use 1 to turn on decorations
-#Gdk.flush()
-
-"""
-
 def __edit_window(window, x=None, y=None, w=None, h=None, nodecorators=True):
     window.set_decorations(0)  # disable window decorators
 

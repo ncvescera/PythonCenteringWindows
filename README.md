@@ -1,5 +1,6 @@
 # PythonCenteringWindows
-A python script able to center windows based on Xorg Server
+
+A python "tiling" script for non tiling WMs for X11
 
 ## Install
 
@@ -9,27 +10,98 @@ Install required modules with:
 pip install -r requirements.txt
 ```
 
-## Usage
-
-You can run this script with:
+Run autoinstall:
 
 ```bash
-python main.py [args]
+python autoinstall.py
 ```
 
-Without no arguments this script center and resize the window.<br>
-With `--noresize` argument this script centere the window and keeps his size.
+## Usage
 
-**WARNING:** This script is tested only with XFCE4 and it works for now !
+You can run this script with the following arguments:
 
-## Xfce4 configuration
+```
+python main.py --help
 
-You can set a keyboard shortcut for this script like this:
+usage: main.py [-h] -m {center,tile_left,tile_right,tile_leftcenter,tile_rightcenter,tile_leftleft,tile_rightright} [--noresize]
 
-1. Open Settings Manager
-2. Select Keyboard
-3. Under Application Shortcut use the add button to add a new shortcut
-4. Add `python path/of/dir` (or `python path/to/dir --noresize`)
-5. Choose a shortcut: SUPER + K
-6. DONE
+My awesome python tiling assistant !
 
+options:
+  -h, --help            show this help message and exit
+  -m, --mode {
+      center,
+      tile_left,
+      tile_right,
+      tile_leftcenter,
+      tile_rightcenter,
+      tile_leftleft,
+      tile_rightright
+      }                 Choose how to tile the active window
+  --noresize            Center window without resize it
+
+```
+
+### Examples
+
+If you want to put the active window on the left part of the screen, run:
+
+```bash
+python main.py -m tile_left
+# pytiling -m tile_left if you used the autoinstall script !!
+```
+
+## Known Issiues
+
+This is kind a big mess, it looks like the correct alignment depends on multiple things: the terminal you are using, your WM, your theme, ecc.
+
+I tesed this script on a Debian 11 VM with:
+
+- Gnome
+- MATE
+- Plasma
+- Xfce4
+
+And on ArchLinux Xfce4 with Chicago95 theme.
+
+The following are the thing I know:
+
+### On Gnome
+
+**Problems:**
+
+- With the deafult terminal left and right alignment doesn't work correctly (shifted from the screen borders and wrong width)
+
+**Success:**
+
+- Centering works with everything
+- Everything seems to work with Konsole
+
+### On MATE
+
+**Problems:**
+
+- With MATE Terminal there are some space between windows but it looks like a feature !!
+
+**Success:**
+
+- With Konsole everything works
+
+### On Plasma
+
+**Problems:**
+
+**Success:**
+
+- With Konsole everything works.
+- With MATE Terminal everything works but with some space between windows (its a feature !)
+
+### On Xfce
+
+**Problems:**
+
+- Sometime left/right tiling fail
+
+**Success:**
+
+- Everything works (more or less ...)

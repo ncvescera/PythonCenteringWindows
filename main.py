@@ -29,11 +29,7 @@ def main():
 def __edit_window(window, x=None, y=None, w=None, h=None, nodecorators=True):
     window.set_decorations(0)  # disable window decorators
 
-    if x is not None and y is not None:
-        window.move(x, y)
-
-    if w is not None and h is not None:
-        window.resize(w, h)
+    window.move_resize(x, y, w, h)
 
     Gdk.flush()     # apply mods
 

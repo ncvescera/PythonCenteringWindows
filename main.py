@@ -8,10 +8,9 @@ import gi
 gi.require_version('Gdk', '3.0')
 from gi.repository import Gdk
 
+
 # display/monitor/screens
 d = Gdk.Display.get_default().get_primary_monitor()
-ss = Gdk.get_default_root_window()
-s = Gdk.get_default_root_window().get_screen()
 
 # dims
 wa = d.get_workarea()
@@ -30,6 +29,7 @@ def __edit_window(window, x=None, y=None, w=None, h=None, nodecorators=True):
     window.set_decorations(0)  # disable window decorators
 
     window.move_resize(x, y, w, h)
+    window.focus(0)
 
     Gdk.flush()     # apply mods
 

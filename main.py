@@ -132,13 +132,20 @@ def centering_window(window):
     print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
     """
 
+
+def close(window):
+    window.destroy()
+    Gdk.flush()
+
+
 if __name__ == '__main__':
     # define selectable options
     # type: Dict[str, Callable[[Window], None]]
     options = {
         'center': centering_window,  # center window
-        'tile_left': tile_left,  # tiling window to the left
-        'tile_right': tile_right,  # tiling window to the right
+        'left': tile_left,  # tiling window to the left
+        'right': tile_right,  # tiling window to the right
+        'close': close, # close the window
     }
 
     # init argument parser

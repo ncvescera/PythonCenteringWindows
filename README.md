@@ -68,40 +68,40 @@ The following are the thing I know:
 
 ### On Gnome
 
-**Problems:**
+_Problems:_
 
 - With the deafult terminal left and right alignment doesn't work correctly (shifted from the screen borders and wrong width)
 
-**Success:**
+_Success:_
 
 - Centering works with everything
 - Everything seems to work with Konsole
 
 ### On MATE
 
-**Problems:**
+_Problems:_
 
 - With MATE Terminal there are some space between windows but it looks like a feature !!
 
-**Success:**
+_Success:_
 
 - With Konsole everything works
 
 ### On Plasma
 
-**Problems:**
+_Problems:_
 
-**Success:**
+_Success:_
 
 - With Konsole everything works.
 - With MATE Terminal everything works but with some space between windows (its a feature !)
 
 ### On Xfce
 
-**Problems:**
+_Problems:_
 
 - Sometime left/right tiling fail
 
-**Success:**
+_Success:_
 
 - Everything works (more or less ...)

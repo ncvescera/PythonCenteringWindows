@@ -4,34 +4,91 @@ import argparse
 from contextlib import contextmanager
 from typing import Any, Dict, Optional, Tuple, Union, Callable  # noqa
 
-from Xlib import X
-from Xlib.display import Display
-from Xlib.error import XError
-from Xlib.xobject.drawable import Window
+import gi
+gi.require_version('Gdk', '3.0')
+from gi.repository import Gdk
 
-# Display Vars
-disp = Display()
-root = disp.screen().root
+# display/monitor/screens
+d = Gdk.Display.get_default().get_primary_monitor()
+ss = Gdk.get_default_root_window()
+s = Gdk.get_default_root_window().get_screen()
 
-# Display settings
-x = 50                                  # x position where to puts windows
-y = 50                                  # y position where to puts windows
-width = root.get_geometry().width       # screen width (eg. 1920)
-height = root.get_geometry().height     # screen height (eg. 1080)
-
+# dims
+wa = d.get_workarea()
+w = wa.width
+h = wa.height
 
 def main():
     # get active window
-    window = get_active_window()
+    window = Gdk.get_default_root_window().get_screen().get_active_window()
 
     # execute user selected tiling operation
     options[args.mode](window)
 
-    # update window
-    disp.sync()
 
 
-def tile_left(window: Window):
+    w.move(int(wid / 2), 0)
+
+    w.move(0, 0)
+
+    w.resize(int(wid / 2), hei)
+
+    Gdk.flush()
+
+
+"""
+Align left and right 
+
+
+
+
+
+print(w)
+print(s)
+print(ss.get_width(), ss.get_height())
+
+
+#wid = ss.get_width()
+#hei = ss.get_height()
+
+print(wid, hei)
+
+tt = 1
+
+w.set_decorations(0) #use 1 to turn on decorations
+
+if tt:
+	w.move(int(wid/2),0)
+else:
+	w.move(0,0)
+
+w.resize(int(wid/2), hei)
+
+Gdk.flush()
+
+#w.set_decorations(Gdk.WMDecoration.ALL) #use 1 to turn on decorations
+#Gdk.flush()
+
+"""
+
+def __edit_window(window, x=None, y=None, w=None, h=None, nodecorators=True):
+    window.set_decorations(0)  # disable window decorators
+
+    if x is not None and y is not None:
+        window.move(x, y)
+
+    if w is not None and h is not None:
+        window.resize(w, h)
+
+    Gdk.flush()     # apply mods
+
+    # redraw decorators
+    if not nodecorators :
+        window.set_decorations(Gdk.WMDecoration.ALL)
+        Gdk.flush()
+
+
+def tile_left(window):
     """
         Tile window to the left part of the screen.
 
@@ -40,31 +97,24 @@ def tile_left(window: Window):
 
     print(f"Left Tiling Window {window}")
 
-    # get window size
-    win_size = get_window_size(window)
-
-    _x = 0
-    _y = 0
-    _w = int(width/2)
-    _h = usable_height
-
+    """
+    x = 0
+    y = 0
+    w = int(w/2)
+    h = h
     print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
+    """
 
-    # tiling left windows
-    window.configure(
-        # where to put the window
-        x=_x,
-        y=_y,
-        # new window dims
-        width=_w,
-        height=_h,
-        # other stuff
-        border_width=0,
-        stack_mode=X.Above
+    __edit_window(
+        window,
+        x=0,
+        y=0,
+        w=int(w/2),
+        h=h
     )
 
 
-def tile_right(window: Window):
+def tile_right(window):
     """
         Tile window to the right part of the screen.
 
@@ -73,162 +123,24 @@ def tile_right(window: Window):
 
     print(f"Tiling Right Window {window}")
 
-    # get window size
-    win_size = get_window_size(window)
-
+    """
     _x = int(width/2)
     _y = 0
     _w = int(width / 2) - 10    # 10 = border width
     _h = usable_height
 
     print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
-
-    # tiling right windows
-    window.configure(
-        # where to put the window
-        x=_x,
-        y=_y,
-        # new window dims
-        width=_w,
-        height=_h,
-        # other stuff
-        border_width=0,
-        stack_mode=X.Above
+    """
+    __edit_window(
+        window,
+        x=int(w/2),
+        y=0,
+        w=int(w / 2),
+        h=h
     )
 
 
-def tile_leftcenter(window: Window):
-    """
-        Tile window to the left-center (2/3) part of the screen.
-
-        -m tile_leftcenter
-    """
-
-    print(f"Tiling LeftCenter Window {window}")
-
-    # get window size
-    win_size = get_window_size(window)
-
-    _x = 0
-    _y = 0
-    _w = int(width / 3)*2
-    _h = usable_height
-
-    print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
-
-    # tiling LeftCenter windows
-    window.configure(
-        # where to put the window
-        x=_x,
-        y=_y,
-        # new window dims
-        width=_w,
-        height=_h,
-        # other stuff
-        border_width=0,
-        stack_mode=X.Above
-    )
-
-
-def tile_rightcenter(window: Window):
-    """
-        Tile window to the right-center (2/3) part of the screen.
-
-        -m tile_rightcenter
-    """
-
-    print(f"Tiling RightCenter Window {window}")
-
-    # get window size
-    win_size = get_window_size(window)
-
-    _x = int(width / 3)
-    _y = 0
-    _w = int(width / 3)*2
-    _h = usable_height
-
-    print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
-
-    # tiling RightCenter windows
-    window.configure(
-        # where to put the window
-        x=_x,
-        y=_y,
-        # new window dims
-        width=_w,
-        height=_h,
-        # other stuff
-        border_width=0,
-        stack_mode=X.Above
-    )
-
-
-def tile_leftleft(window: Window):
-    """
-        Tile window to the left-left (1/3) part of the screen.
-
-        -m tile_leftleft
-    """
-
-    print(f"Tiling RightCenter Window {window}")
-
-    # get window size
-    win_size = get_window_size(window)
-
-    _x = 0
-    _y = 0
-    _w = int(width / 3)
-    _h = usable_height
-
-    print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
-
-    # tiling RightCenter windows
-    window.configure(
-        # where to put the window
-        x=_x,
-        y=_y,
-        # new window dims
-        width=_w,
-        height=_h,
-        # other stuff
-        border_width=0,
-        stack_mode=X.Above
-    )
-
-
-def tile_rightright(window: Window):
-    """
-        Tile window to the right-right (1/3) part of the screen.
-
-        -m tile_rightright
-    """
-
-    print(f"Tiling RightCenter Window {window}")
-
-    # get window size
-    win_size = get_window_size(window)
-
-    _x = int(width / 3) * 2
-    _y = 0
-    _w = int(width / 3)
-    _h = usable_height
-
-    print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
-
-    # tiling RightCenter windows
-    window.configure(
-        # where to put the window
-        x=_x,
-        y=_y,
-        # new window dims
-        width=_w,
-        height=_h,
-        # other stuff
-        border_width=0,
-        stack_mode=X.Above
-    )
-
-def centering_window(window: Window):
+def centering_window(window):
     """
         Centers the active window.
 
@@ -239,9 +151,15 @@ def centering_window(window: Window):
 
     print(f"Centering Window {window}")
 
-    # get window size
-    win_size = get_window_size(window)
+    __edit_window(
+        window,
+        x=50,
+        y=50,
+        w=w-100,
+        h=h-100
+    )
 
+    """
     if args.noresize:
         # centering windows without resize dims
         print('\t with NoResize mode')
@@ -261,86 +179,7 @@ def centering_window(window: Window):
         _h = height - (y * 2)
 
     print(f"New Window pos: ({_x}, {_y}), New Window size: ({_w}, {_h})")
-
-    # tiling center windows
-    window.configure(
-        # where to put the window
-        x=_x,
-        y=_y,
-        # new window dims
-        width=_w,
-        height=_h,
-        # other stuff
-        border_width=0,
-        stack_mode=X.Above
-    )
-
-
-def get_window_size(window: Window):
-    """Returns window size object"""
-    # get window dims
-    win_size = window.get_geometry()
-    print(f"Window pos: ({win_size.x}, {win_size.y})  Window size: ({win_size.width}, {win_size.height})")
-
-    return win_size
-
-
-def calculate_usable_height():
-    prop1 = root.get_full_property(disp.get_atom("_NET_WORKAREA"), X.AnyPropertyType).value[3]
-    prop2 = root.get_full_property(disp.get_atom("_NET_WORKAREA"), X.AnyPropertyType).value[1]
-    res = prop1 - prop2
-
-    return res if res > 0 else res*(-1)
-
-
-def get_active_window():
-    """Wrapper for getting the active window object. Returns the WindowObject of the active window."""
-
-    # Prepare the property names we use so they can be fed into X11 APIs
-    NET_ACTIVE_WINDOW = disp.intern_atom('_NET_ACTIVE_WINDOW')
-    NET_WM_NAME = disp.intern_atom('_NET_WM_NAME')  # UTF-8
-    WM_NAME = disp.intern_atom('WM_NAME')  # Legacy encoding
-
-    last_seen = {'xid': None, 'title': None}  # type: Dict[str, Any]
-
-    @contextmanager
-    def window_obj(win_id: Optional[int]) -> Window:
-        """Simplify dealing with BadWindow (make it either valid or None)"""
-        window_obj = None
-        if win_id:
-            try:
-                window_obj = disp.create_resource_object('window', win_id)
-            except XError:
-                pass
-        yield window_obj
-
-    def _get_active_window() -> Tuple[Optional[int], bool]:
-        """Return a (window_id, focus_has_changed) tuple for the active window."""
-
-        response = root.get_full_property(NET_ACTIVE_WINDOW,
-                                          X.AnyPropertyType)
-        if not response:
-            return None, False
-        win_id = response.value[0]
-
-        focus_changed = (win_id != last_seen['xid'])
-        if focus_changed:
-            with window_obj(last_seen['xid']) as old_win:
-                if old_win:
-                    old_win.change_attributes(event_mask=X.NoEventMask)
-
-            last_seen['xid'] = win_id
-            with window_obj(win_id) as new_win:
-                if new_win:
-                    new_win.change_attributes(event_mask=X.PropertyChangeMask)
-
-        return win_id, focus_changed
-
-    # get active window and return Window Object
-    win_id, _ = _get_active_window()
-    with window_obj(win_id) as window:
-        return window
-
+    """
 
 if __name__ == '__main__':
     # define selectable options
@@ -349,10 +188,6 @@ if __name__ == '__main__':
         'center': centering_window,  # center window
         'tile_left': tile_left,  # tiling window to the left
         'tile_right': tile_right,  # tiling window to the right
-        'tile_leftcenter': tile_leftcenter,
-        'tile_rightcenter': tile_rightcenter,
-        'tile_leftleft': tile_leftleft,
-        'tile_rightright': tile_rightright,
     }
 
     # init argument parser
@@ -374,7 +209,5 @@ if __name__ == '__main__':
     )
 
     args = parser.parse_args()
-
-    usable_height = calculate_usable_height()
 
     main()
